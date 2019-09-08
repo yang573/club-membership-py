@@ -2,7 +2,7 @@
 
 import os
 from flask import Flask
-from database import event
+from database import event, member, misc
 #from flask import request
 #from flask import jsonify
 
@@ -12,7 +12,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.register_blueprint(event.bp, url_prefix='/database/event')
-#app.register_blueprint(member.bp, url_prefix='/database/member')
+app.register_blueprint(member.bp, url_prefix='/database/member')
+app.register_blueprint(misc.bp, url_prefix='/database/misc')
 
 print("App print")
 

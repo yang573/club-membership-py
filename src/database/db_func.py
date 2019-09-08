@@ -54,16 +54,7 @@ def select(table: Table, columns: list = None, conditions: list = None, order: t
 
     # Where clause, passed as list of tuples
     if conditions is not None:
-        print(conditions)
-        condition_list = []
-        for c in conditions:
-            if len(c) == 3:
-                condition_list.append(where(c[0], c[1], c[2]))
-            else:
-                condition_list.append(where(c[0], c[1]))
-
-        condition_str = " WHERE " + " AND ".join(condition_list)
-        sql += condition_str
+        sql += where_clause(conditions)
 
     # Order by
     if order is not None:
@@ -79,9 +70,36 @@ def select(table: Table, columns: list = None, conditions: list = None, order: t
     print(sql)
     return sql + ";"
 
+# table: The Table object representing the table to count from
+# count_arg: The argument for the COUNT() function
+# conditions: A list of two or three-tuples representing Where clauses
+# group: The column to group by
+def count(table: Table, count_arg: str = '*',  conditions: list = None, group: str = None):
+    sql = "SELECT COUNT({}) as counts FROM {}".format(count_arg, table.name)
+
+    if conditions is not None:
+        sql += where_clause(conditions)
+
+    if group is not None:
+        sql += " GROUP BY {}".format(group)
+
+    return sql + ";"
+
 def where(field: str, value, op: str = "="):
     if type(value) is str:
         return "{} {} '{}'".format(field, op, value)
     else:
         return "{} {} {}".format(field, op, value)
+
+def where_clause(conditions: list):
+    print(conditions)
+    condition_list = []
+    for c in conditions:
+        if len(c) == 3:
+            condition_list.append(where(c[0], c[1], c[2]))
+        else:
+            condition_list.append(where(c[0], c[1]))
+
+    condition_str = " WHERE " + " AND ".join(condition_list)
+    return condition_str
 

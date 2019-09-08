@@ -16,6 +16,7 @@ def insert_member_from_event(row, header_order):
     memberID = -1
     email = row[header_order[3]].lower()
     row[header_order[3]] = email
+    email_index = header_order[3]
     cursor = conn.cursor()
 
     print(row)
@@ -24,6 +25,7 @@ def insert_member_from_event(row, header_order):
     if EMAIL_REGEX.match(email):
         sql = select(members, columns=[members[0]], conditions=[(members[4], email)])
     else:
+        header_order[3] = -1 # Ignore invalid email for rest of function
         sql = select(members,
                 columns=[members[0]],
                 conditions=[
@@ -95,8 +97,11 @@ def insert_member_from_event(row, header_order):
     else:
         result = (cursor.lastrowid, False)
 
+    header_order[3] = email_index # Restore email index
     cursor.close()
     return result
+
+# Routing
 
 @bp.route('/upload/csv', methods=["POST"])
 def upload_csv():
