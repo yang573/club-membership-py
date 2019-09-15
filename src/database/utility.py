@@ -18,6 +18,7 @@ def save_file(file, path):
 def delete_file(path):
     os.remove(path)
 
+# TODO: Use dict instead for readability?
 def get_header_index(header, ordered_header):
     order = []
     for x in ordered_header:

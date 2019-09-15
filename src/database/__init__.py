@@ -28,4 +28,8 @@ members = Members()
 member_event = Member_Event()
 semester = Semester()
 
+MAILCHIMP_URL = "https://{}.api.mailchimp.com/3.0".format(config.mailchimp_dc)
+MAILCHIMP_USER = config.mailchimp_user
+MAILCHIMP_KEY = config.mailchimp_api_key
+MAILCHIMP_LIST_ID = config.mailchimp_main_audience_id
 

@@ -7,6 +7,7 @@ from .db_func import *
 
 bp = Blueprint('misc', __name__)
 
+# TODO: Add Mailchimp stats
 @bp.route('/newsletter', methods=["GET"])
 def get_newsletter_info():
     cursor = conn.cursor()

@@ -17,7 +17,7 @@ def insert(table: Table, values: list, columns: list = None):
         columns_str = "(" + ", ".join(columns) + ")"
         sql = "INSERT INTO {} {} VALUES {};".format(table.name, columns_str, values_str)
 
-    print(sql)
+    #print(sql)
     return sql
 
 # table: The Table object representing the table to update
@@ -36,7 +36,7 @@ def update(table: Table, columns: list, values: list, entry_id: int):
     set_str = ", ".join(set_list)
 
     sql = "UPDATE {} SET {} WHERE {};".format(table.name, set_str, where(table[0], entry_id))
-    print(sql)
+    #print(sql)
     return sql
 
 # table: The Table object representing the table to select from
@@ -67,8 +67,8 @@ def select(table: Table, columns: list = None, conditions: list = None, order: t
     if limit > 0:
         sql += " LIMIT {}".format(limit)
 
-    print(sql)
-    return sql + ";"
+    #print(sql)
+    return sql
 
 # table: The Table object representing the table to count from
 # count_arg: The argument for the COUNT() function
@@ -85,14 +85,16 @@ def count(table: Table, count_arg: str = '*',  conditions: list = None, group: s
 
     return sql + ";"
 
+#
 def where(field: str, value, op: str = "="):
     if type(value) is str:
         return "{} {} '{}'".format(field, op, value)
     else:
         return "{} {} {}".format(field, op, value)
 
+#
 def where_clause(conditions: list):
-    print(conditions)
+    #print(conditions)
     condition_list = []
     for c in conditions:
         if len(c) == 3:
