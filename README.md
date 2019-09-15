@@ -3,6 +3,8 @@ Compile attendance data from sign-in sheets across different club events. Rebuil
 
 *This app is a work in progress. You will probably need to tweak some code and configurations to get it functional. Use at your own discretion.*
 
+Getting Started
+-------
 To use this application, you will need:
 * A MySQL database
 * Flask
@@ -23,6 +25,8 @@ mailchimp_dc=[data center] # found at the end of your api key as eg. 'us5'
 mailchimp_main_audience_id=[id] # found in the under audience settings
 ```
 
+Endpoints
+-------
 Right now, this application supports the following end-points:
 ```
 POST /database/event/upload/csv
@@ -40,7 +44,8 @@ GET /database/misc/newsletter
 ```
 Get the number of members subscribed to the newsletter according to the database.
 
-Major TODO's:
+Major TODO's
+-------
 * Look at MySQLAlchemy for constructing SQL strings
 * Add more endpoints
 * Host on an internal or cloud server
