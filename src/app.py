@@ -15,8 +15,6 @@ app.register_blueprint(event.bp, url_prefix='/database/event')
 app.register_blueprint(member.bp, url_prefix='/database/member')
 app.register_blueprint(misc.bp, url_prefix='/database/misc')
 
-print("App print")
-
 @app.route('/')
 def default():
     return 'oops'

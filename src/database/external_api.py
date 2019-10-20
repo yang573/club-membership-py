@@ -12,8 +12,9 @@ def get_hash(email):
 
 # member_email: The email of the subscriber to update on Mailchimp
 # is_subscribed: Bool indicating if the member wants to subscribe
+# unsub: Bool indicating if unsubs should be done
 # Returns: True on 200 status code, False otherwise
-def update_member_newsletter(email: str, first_name: str, last_name: str, is_subscribed: bool):
+def update_member_newsletter(email: str, first_name: str, last_name: str, is_subscribed: bool, unsub: bool):
     url_params = {'fields': 'email_addresss,status'}
     if is_subscribed:
         # Create & subscribe
@@ -39,11 +40,10 @@ def update_member_newsletter(email: str, first_name: str, last_name: str, is_sub
                             params=url_params,
                             json=body,
                             auth=(MAILCHIMP_USER, MAILCHIMP_KEY))
-            print(req.text)
+        print(req.text)
 
         return req.status_code == requests.codes.ok
-
-    else:
+    elif unsub:
         # Unsubscribe
         # If the email doesn't exist, then it'll fail without consequence
         body = { "status": "unsubscribed" }
@@ -55,4 +55,6 @@ def update_member_newsletter(email: str, first_name: str, last_name: str, is_sub
 
         print(req.text)
         return req.status_code == requests.codes.ok
+    else:
+        return True
 

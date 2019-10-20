@@ -15,8 +15,10 @@ EVENT_COLUMNS = ["First Name", "Last Name", "Year", "Email", "(Mailing List|News
 # row: A list representing a row from the sign-in csv
 # header_order: A list for converting the order of the header
 #   from the csv to the order specfied in EVENT_COLUMNS
+# use_mailchimp: A tuple where #1 indicates whether to use mailchimp
+#   and #2 indicates whether to unsub if needed
 # Returns: A 3-tuple with the MemberID, a bool
-def insert_member_from_event(row, header_order):
+def insert_member_from_event(row, header_order, use_mailchimp):
     sql = None
     result = None
     memberID = -1
@@ -107,11 +109,12 @@ def insert_member_from_event(row, header_order):
     # This could be an existing member updating their academic year,
     # but the wasted calls should only occur at the beginning of the academic year.
     newsletter_status = -1
-    if newsletter_sub != -1 and cursor.rowcount == 1:
+    if use_mailchimp[0] and newsletter_sub != -1 and cursor.rowcount == 1:
         newsletter_ret = update_member_newsletter(email,
                              row[header_order[0]],
                              row[header_order[1]],
-                             row[header_order[4]])
+                             row[header_order[4]],
+                             use_mailchimp[1])
         if newsletter_ret:
             newsletter_status = newsletter_sub
 
@@ -119,10 +122,16 @@ def insert_member_from_event(row, header_order):
     if sql:
         cursor.execute(sql)
 
-    if memberID != -1:
-        result = (memberID, True, newsletter_status)
+    if use_mailchimp[0]:
+        if memberID != -1:
+            result = (memberID, True, newsletter_status)
+        else:
+            result = (cursor.lastrowid, False, newsletter_status)
     else:
-        result = (cursor.lastrowid, False, newsletter_status)
+        if memberID != -1:
+            result = (memberID, True)
+        else:
+            result = (cursor.lastrowid, False)
 
     header_order[3] = email_index # Restore email index
     cursor.close()
@@ -166,18 +175,27 @@ def upload_csv():
 
     # Go through each row and insert/modify member data
     members_present = []
+
+    mailchimp = False
+    unsub = False
+    if request.form['mailchimp']:
+        mailchimp = str(request.form['mailchimp']).lower() in ('yes','true','1')
+        if request.form['unsub']:
+            unsub = str(request.form['unsub']).lower() in ('yes','true','1')
+
     for row in reader:
-        result = insert_member_from_event(row, header_order)
+        result = insert_member_from_event(row, header_order, (mailchimp, unsub))
         members_present.append(result[0])
         if result[1]:
             number_returning += 1
         else:
             number_new += 1
 
-        if result[2] == 0:
-            newsletter_unsub += 1
-        elif result[2] == 1:
-            newsletter_sub += 1
+        if mailchimp:
+            if result[2] == 0:
+                newsletter_unsub += 1
+            elif result[2] == 1:
+                newsletter_sub += 1
 
     # Get SemesterID
     sql = None
@@ -220,10 +238,13 @@ def upload_csv():
 #        print(csvfile)
 #
 #    delete_file(path)
-    return {'EventID': eventID,
+    response = {'EventID': eventID,
             'Attendance': len(csv_list) - 1,
             'Number_Returning': number_returning,
-            'Number_New': number_new,
-            'Number_Subscriptions': newsletter_sub,
-            'Number_Unsubscriptions': newsletter_unsub}, 200
+            'Number_New': number_new}
+    if mailchimp:
+        response['Number_Subscriptions'] = newsletter_sub
+        response['Number_Unsubscriptions'] = newsletter_unsub
+
+    return response, 200
 

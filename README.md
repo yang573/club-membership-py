@@ -31,7 +31,7 @@ Right now, this application supports the following end-points:
 ```
 POST /database/event/upload/csv
 ```
-Upload a csv containing sign-ins the the database. The csv must contain 'First Name', 'Last Name', "Email', & 'Newsletter' or 'Mailing List' in the headers. Adds any subscriptions or unsubscriptions to Mailchimp.
+Upload a csv containing sign-ins the the database. The csv must contain 'First Name', 'Last Name', "Email', & 'Newsletter' or 'Mailing List' in the headers. The body requires you to specify the `file`, `eventName`, `eventDate, and `semester`. (In the future, this data will be obtained directly from the csv.) Specifying `mailchimp` to 'true' will add any subscriptions to Mailchimp. Specifying `unsub` to 'true' with `mailchimp` will unsubscribe users from mailchimp if indicated.
 
 ```
 POST /database/member/
