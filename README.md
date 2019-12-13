@@ -46,6 +46,8 @@ Get the number of members subscribed to the newsletter according to the database
 
 Major TODO's
 -------
+* List of planned endpoints here: https://docs.google.com/document/d/18PuzbZVbj5R0NMgaVxVDdJHTaW9GWt7KDlJ-wJ6eu08/edit?usp=sharing
+* Add above endpoints to a separate markdown file
 * Look at MySQLAlchemy for constructing SQL strings
 * Add more endpoints
 * Host on an internal or cloud server
